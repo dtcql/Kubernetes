@@ -7,6 +7,24 @@ if it is a multizone cluster => open a support ticket to enable VRF(vitual routi
 
 ## ALB
 
+Ingress is a Kubernetes service discovery method that balances network traffic workloads in your cluster by forwarding public or private requests to your apps. You can use Ingress to expose multiple app services to the public or to a private network by using a unique public or private route.
+
+Ingress consists of three components:
+
+    Ingress resources
+    Application load balancers (ALBs)
+    A multizone load balancer (MZLB). A load balancer to handle incoming requests across zones. For classic clusters, this component is the multizone load balancer (MZLB) that IBM Cloud Kubernetes Service creates for you. For VPC clusters, this component is the VPC load balancer that is created for you in your VPC.
+
+* Ingress resource
+To expose an app by using Ingress, you must create a Kubernetes service for your app and register this service with Ingress by defining an Ingress resource. The Ingress resource is a Kubernetes resource that defines the rules for how to route incoming requests for apps.
+
+* Application load balancer (ALB)
+The application load balancer (ALB) is an external load balancer that listens for incoming HTTP, HTTPS, or TCP service requests. The ALB then forwards requests to the appropriate app pod according to the rules defined in the Ingress resource.
+
+* Classic cluster multizone load balancer (MZLB)
+Whenever you create a multizone cluster or add a zone to a single zone cluster, an Akamai multizone load balancer (MZLB) is automatically created and deployed so that 1 MZLB exists for each region. The MZLB puts the IP addresses of your ALBs behind the same subdomain and enables health checks on these IP addresses to determine whether they are available or not.
+
+* Expose TCP ports
 Ingress application load balancer will be created automatically when your cluster is created.
 You can also create new ALB or update the current ALB.
 To expose TCP applications, create CM ibm-ingress-deploy-config to specify tcp-ports CM of each ALB.
