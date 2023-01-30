@@ -160,3 +160,13 @@ kubectl scale --replicas=3 deployment nginx
 ```
 自动扩容 HPA（Horizontal Pod Autoscaling）
 
+## 探针
+
+1. startupProbe 判断是否启动
+2. livenessProbe 判断是否运行
+3. readynessProbe 判断是否健康
+
+### 检测方式 
+
+
+
