@@ -11,7 +11,7 @@ if it is a multizone cluster => open a support ticket to enable VRF(vitual routi
 ```
 ibmcloud ks cluster get --cluster b75ecd28fd3b408a94c9a0b724a28bc7 --show-resources
 ```
-![](2023-01-30-10-14-08.png)
+![](pic/2023-01-30-10-14-08.png)
 
 ## ALB
 
