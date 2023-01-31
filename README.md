@@ -134,6 +134,18 @@ status:
 kubectl set image deployment nginx nginx-1.15.4 --record
 ```
 
+## 给资源打标签
+label给k8s各种资源分类，通过label过滤找到对应的资源
+
+```
+kubectl label node k8s-node01 k8s-node02 prod=true
+
+deployment的yaml里写
+  spec:
+    nodeSelector:
+      prod:true
+```
+
 ## 回滚
 
 回滚到上一版本
@@ -158,15 +170,33 @@ kubectl rollout undo deployment nginx --to-revision=revision number
 ```
 kubectl scale --replicas=3 deployment nginx
 ```
-自动扩容 HPA（Horizontal Pod Autoscaling）
+自动扩容 HPA（Horizontal Pod Autoscaling） 观察pod的cpu和内存使用率来自动扩展或者缩容pod的数量，还可以通过自定义的流量API自动扩缩容。
+需要先装好metrics-server，用top命令看cpu及内存使用量。
+```
+kubectl top pod -n qa-sftpdsgpub
+```
+deployment yaml中必须定义request参数，cpu使用率达到request的%多少之后，进行扩缩容。
+
+```
+kubectl autoscale deployment qa-sftpdsgpub -n qa-sftpdsgpub --cpu-percent=100 --min=2 --max=5
+
+kubectl get hpa -n qa-sftpdsgpub
+```
+
+
+
 
 ## 探针
 
-1. startupProbe 判断是否启动
-2. livenessProbe 判断是否运行
-3. readynessProbe 判断是否健康
+1. startupProbe 判断是否启动  会杀pod
+2. livenessProbe 判断是否运行   会杀pod
+3. readynessProbe 判断是否健康  不会杀，但是会拿掉endpoint
 
 ### 检测方式 
+
+1. ExecAction 容器内执行一个命令，返回值为0，认为容器健康。
+2. TCPSocketAction 通过TCP连接检查是否端口是否开启，类似telnet
+3. HTTPGetAction 用程序API来检查，用的最多
 
 
 
