@@ -38,7 +38,7 @@ You can also create new ALB or update the current ALB.
 To expose TCP applications, create CM ibm-ingress-deploy-config to specify tcp-ports CM of each ALB.
 Then list all your TCP ports in a new CM kube-system/custom-tcp-ports.
 Edit each ALB service to open the TCP ports. and do a refresh
-
+![](pic/2023-01-31-15-37-53.png)
 Create a YAML file for an ibm-ingress-deploy-config ConfigMap.
 ```
 apiVersion: v1
@@ -140,10 +140,27 @@ label给k8s各种资源分类，通过label过滤找到对应的资源
 ```
 kubectl label node k8s-node01 k8s-node02 prod=true
 
+看label kubectl get deployment -n qa-mqpassopen -owide
+
 deployment的yaml里写
   spec:
     nodeSelector:
       prod:true
+```
+
+删除标签，修改标签
+
+```
+kubectl label node k8s-node01 k8s-node02 prod-
+
+kubectl label node k8s-node01 k8s-node02 prod=false --overwrite
+```
+
+select长语法
+```
+kubectl get po -A -l 'prod in (true, false)'
+
+kubectl get po -A -l prod!=false
 ```
 
 ## 回滚
@@ -184,8 +201,6 @@ kubectl get hpa -n qa-sftpdsgpub
 ```
 
 
-
-
 ## 探针
 
 1. startupProbe 判断是否启动  会杀pod
@@ -199,4 +214,23 @@ kubectl get hpa -n qa-sftpdsgpub
 3. HTTPGetAction 用程序API来检查，用的最多
 
 
+## service反代外部服务
 
+service建立的时候selector不指向pod，手动建立一个endpoint，endpoint的地址改为外部服务地址。
+endpoint的名称必须和service一致，这样就能自动找到service对应的endpoint。
+集群内用service的地址去访问qa-mqoctopus.qa-sftpdsgpub.svc.cluster.local。
+
+![](pic/2023-01-31-14-59-38.png)
+![](pic/2023-01-31-15-12-13.png)
+
+Service反代外部域名，用的比较少，会有跨域问题。
+![](pic/2023-01-31-15-45-22.png)
+
+## 创建临时pod用busybox
+
+```
+kubectl run -it --image busybox busybox --rm /bin/sh
+```
+
+## docker attach exec
+![](pic/2023-02-01-12-06-55.png)
